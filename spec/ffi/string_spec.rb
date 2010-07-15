@@ -1,3 +1,4 @@
+# coding: utf-8
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_helper"))
 describe "String tests" do
   include FFI
@@ -8,6 +9,12 @@ describe "String tests" do
     attach_function :string_equals, [ :string, :string ], :int
     attach_function :string_dummy, [ :string ], :void
     attach_function :string_null, [ ], :string
+  end
+  it "Pointer#write_string puts the correct number of bytes for a string with multibyte characters" do
+    mp = MemoryPointer.new 1024
+    mp.write_string("ぱんだ")
+    str = mp.get_string(0)
+    str.bytesize.should == 9
   end
   it "MemoryPointer#get_string returns a tainted string" do
     mp = MemoryPointer.new 1024
